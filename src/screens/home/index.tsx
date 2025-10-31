@@ -1,30 +1,31 @@
-import React, { useEffect, useRef } from 'react';
-import Container from '../../components/Container';
-import HomeHeader from '../../components/HomeHeader';
-import HomeMainCard from '../../components/HomeMainCard';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useRef } from "react";
+import Container from "../../components/Container";
+import HomeHeader from "../../components/HomeHeader";
+import HomeMainCard from "../../components/HomeMainCard";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import {
   fontScale,
   horizontalScale,
   verticalScale,
-} from '../../constants/responsive';
-import fontConstants from '../../constants/fontConstants';
-import { recentData, upcomingData } from '../../helpers/dummyData';
-import HomeSubCard from '../../components/HomeSubCard';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import { useDispatch, useSelector } from 'react-redux';
-import { Dispatch } from 'redux';
-import { getCMEAction } from '../../redux/action/homeAction';
-import { CloseIcon, ForwardIcon } from '../../assets/icons/HomeIcons';
-import colors from '../../constants/colors';
-import { useNavigation } from '@react-navigation/native';
+} from "../../constants/responsive";
+import fontConstants from "../../constants/fontConstants";
+import { recentData, upcomingData } from "../../helpers/dummyData";
+import HomeSubCard from "../../components/HomeSubCard";
+import RBSheet from "react-native-raw-bottom-sheet";
+import { CloseIcon, ForwardIcon } from "../../assets/icons/HomeIcons";
+import colors from "../../constants/colors";
+import { useNavigation } from "@react-navigation/native";
 import NavigationTypes, {
   HomeScreenNavigationProp,
-  RootStackParamList,
-} from '../../navigations/NavigationTypes';
+} from "../../navigations/NavigationTypes";
+
+interface RBSheetRef {
+  open: () => void;
+  close: () => void;
+}
 
 const HomeScreen = () => {
-  const refRBSheet: any = useRef(null);
+  const refRBSheet = useRef<RBSheetRef | null>(null);
   const navigation = useNavigation<HomeScreenNavigationProp>();
   // const dispatch: Dispatch = useDispatch();
   // const CMEDATA = useSelector((state: any) => state?.home?.CMEData);
@@ -97,7 +98,7 @@ const HomeScreen = () => {
           container: [styles.containerStyle],
         }}
         customModalProps={{
-          animationType: 'slide',
+          animationType: "slide",
           statusBarTranslucent: true,
         }}
         customAvoidingViewProps={{
@@ -177,10 +178,10 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   timeViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flexShrink: 1,
-    maxWidth: '30%',
+    maxWidth: "30%",
   },
   typeTextStyle: {
     fontSize: fontScale(12),
@@ -197,19 +198,19 @@ const styles = StyleSheet.create({
   imageStyle: {
     height: verticalScale(42),
     width: verticalScale(42),
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   vStyle: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
     flex: 1,
   },
   subVStyle: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
     flex: 1,
   },
   recentAlertStyle: {
@@ -218,9 +219,9 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   bottomViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   containerStyle: {
     height: verticalScale(240),

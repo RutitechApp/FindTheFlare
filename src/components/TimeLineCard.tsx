@@ -1,25 +1,37 @@
-import { View, Text, Pressable } from 'react-native';
-import React from 'react';
-import { RecentIcon, Timeline } from '../assets/icons/TimeLineIcons';
+import { View, Text, Pressable } from "react-native";
+import React from "react";
+import { RecentIcon, Timeline } from "../assets/icons/TimeLineIcons";
 import {
   fontScale,
   horizontalScale,
   verticalScale,
-} from '../constants/responsive';
-import TextCover from './TextCover';
-import colors from '../constants/colors';
-import { ForwardIcon } from '../assets/icons/HomeIcons';
-import fontConstants from '../constants/fontConstants';
-import { ImpactIcon } from '../assets/icons/EventIcons';
+} from "../constants/responsive";
+import TextCover from "./TextCover";
+import colors from "../constants/colors";
+import { ForwardIcon } from "../assets/icons/HomeIcons";
+import fontConstants from "../constants/fontConstants";
+import { ImpactIcon } from "../assets/icons/EventIcons";
+
+interface TimeLineCardData {
+  id: number;
+  title: string;
+  intensity: string;
+  type: string;
+  time: string;
+  desc: string;
+  duration: string;
+  impact: string;
+}
 
 interface TimeLineCardProps {
-  data?: any;
+  data?: TimeLineCardData;
   onPress?: () => void;
 }
 
 const TimeLineCard: React.FC<TimeLineCardProps> = ({ data, onPress }) => {
+  if (!data) return;
   return (
-    <View style={{ flexDirection: 'row' }}>
+    <View style={{ flexDirection: "row" }}>
       <Timeline height={verticalScale(132)} width={horizontalScale(10)} />
       <Pressable
         style={{
@@ -33,15 +45,15 @@ const TimeLineCard: React.FC<TimeLineCardProps> = ({ data, onPress }) => {
       >
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
+              flexDirection: "row",
+              alignItems: "center",
               gap: horizontalScale(6),
             }}
           >
@@ -50,10 +62,10 @@ const TimeLineCard: React.FC<TimeLineCardProps> = ({ data, onPress }) => {
           </View>
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
+              flexDirection: "row",
+              alignItems: "center",
               gap: horizontalScale(6),
-              maxWidth: '40%',
+              maxWidth: "40%",
             }}
           >
             <Text
@@ -94,11 +106,11 @@ const TimeLineCard: React.FC<TimeLineCardProps> = ({ data, onPress }) => {
         <View
           style={{
             marginTop: verticalScale(12),
-            flexDirection: 'row',
+            flexDirection: "row",
             gap: horizontalScale(10),
           }}
         >
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: "row" }}>
             <RecentIcon
               width={horizontalScale(20)}
               height={horizontalScale(20)}
@@ -124,7 +136,7 @@ const TimeLineCard: React.FC<TimeLineCardProps> = ({ data, onPress }) => {
               </Text>
             </View>
           </View>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: "row" }}>
             <ImpactIcon
               width={horizontalScale(20)}
               height={horizontalScale(20)}

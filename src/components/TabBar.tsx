@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import React, { FC } from "react";
+import { View, StyleSheet, Pressable } from "react-native";
 import {
   BottomTabBarProps,
   BottomTabNavigationProp,
-} from '@react-navigation/bottom-tabs';
-import { verticalScale } from '../constants/responsive';
+} from "@react-navigation/bottom-tabs";
+import { verticalScale } from "../constants/responsive";
 import {
   Home,
   HomeActive,
@@ -14,15 +14,25 @@ import {
   SettingActive,
   TimeLine,
   TimeLineActive,
-} from '../assets/icons/TabIcons';
+} from "../assets/icons/TabIcons";
 import NavigationTypes, {
   RootStackParamList,
-} from '../navigations/NavigationTypes';
-import colors from '../constants/colors';
+} from "../navigations/NavigationTypes";
+import colors from "../constants/colors";
+
+export type BottomTabParamList = {
+  [NavigationTypes.HOME]: undefined;
+  [NavigationTypes.TIMELINE]: undefined;
+  [NavigationTypes.MAP]: undefined;
+  [NavigationTypes.SETTING]: undefined;
+};
 
 type TabItemProps = {
-  name: keyof RootStackParamList;
-  navigation: BottomTabNavigationProp<any>;
+  name: keyof BottomTabParamList;
+  navigation: BottomTabNavigationProp<
+    RootStackParamList,
+    keyof RootStackParamList
+  >;
   sIndex: number;
   index: number;
   isFocused?: boolean;
@@ -69,7 +79,7 @@ const TabItem: FC<TabItemProps> = ({ name, isFocused, navigation }) => {
   );
 };
 
-const TabBar: FC<BottomTabBarProps> = props => {
+const TabBar: FC<BottomTabBarProps> = (props) => {
   const { routes, index } = props.state;
   return (
     <View style={style.mainContainer}>
@@ -79,7 +89,7 @@ const TabBar: FC<BottomTabBarProps> = props => {
         return (
           <TabItem
             key={route.key}
-            name={route.name as keyof RootStackParamList}
+            name={route.name as keyof BottomTabParamList}
             isFocused={isFocused}
             navigation={
               props.navigation as unknown as BottomTabNavigationProp<RootStackParamList>
@@ -95,18 +105,15 @@ const TabBar: FC<BottomTabBarProps> = props => {
 export default TabBar;
 
 const style = StyleSheet.create({
-  imageBackgroundImageStyle: {
-    borderRadius: 74,
-  },
   mainContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
     paddingVertical: 10,
-    width: '100%',
+    width: "100%",
     backgroundColor: colors.white10Opacity,
     height: verticalScale(80),
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
@@ -119,7 +126,7 @@ const style = StyleSheet.create({
   },
   viewStyle: {
     paddingHorizontal: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

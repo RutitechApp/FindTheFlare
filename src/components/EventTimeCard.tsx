@@ -1,23 +1,28 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import colors from '../constants/colors';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import colors from "../constants/colors";
 import {
   fontScale,
   horizontalScale,
   verticalScale,
-} from '../constants/responsive';
-import fontConstants from '../constants/fontConstants';
+} from "../constants/responsive";
+import fontConstants from "../constants/fontConstants";
 
-interface EventTimeCardProps {
-  data?: any;
+interface EventTimeCardData {
+  value?: string;
+  label?: string;
 }
 
-const EventTimeCard: React.FC<EventTimeCardProps> = ({ data }) => {
+interface EventTimeCardProps {
+  data?: EventTimeCardData[];
+}
+
+const EventTimeCard: React.FC<EventTimeCardProps> = ({ data = [] }) => {
   return (
     <View style={styles.viewStyle}>
       <Text style={styles.textStyle}>TIME TO IMPACT</Text>
       <View style={styles.subViewStyle}>
-        {data.map((item?: any, index?: number | undefined | any) => (
+        {data.map((item, index) => (
           <React.Fragment key={index}>
             <View style={styles.vStyle}>
               <Text style={styles.tStyle}>{item.value}</Text>
@@ -40,7 +45,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(13),
     borderRadius: verticalScale(10),
     marginTop: verticalScale(20),
-    alignItems: 'center',
+    alignItems: "center",
   },
   textStyle: {
     fontSize: fontScale(16),
@@ -49,10 +54,10 @@ const styles = StyleSheet.create({
   },
   subViewStyle: {
     backgroundColor: colors.white10Opacity,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    width: "100%",
     marginTop: verticalScale(15),
     paddingVertical: verticalScale(15),
     borderRadius: verticalScale(10),
@@ -60,7 +65,7 @@ const styles = StyleSheet.create({
   lineViewStyle: {
     height: verticalScale(32),
     width: horizontalScale(1),
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
   },
   tStyle: {
     fontSize: fontScale(24),
@@ -70,10 +75,10 @@ const styles = StyleSheet.create({
   subTStyle: {
     fontSize: fontScale(11),
     fontFamily: fontConstants.MULISH_SEMIBOLD,
-    color: '#C4C4C4',
+    color: "#C4C4C4",
   },
   vStyle: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
   },
 });

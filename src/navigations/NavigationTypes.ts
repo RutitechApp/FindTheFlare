@@ -1,4 +1,14 @@
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+export interface EventDetailsData {
+  id: number;
+  title: string;
+  type: string;
+  time: string;
+  description: string;
+  image: React.ReactNode;
+  color: string;
+}
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -7,47 +17,47 @@ export type RootStackParamList = {
   Map: undefined;
   Setting: undefined;
   Tab: undefined;
-  EventDetails: { data?: any };
+  EventDetails: { data?: EventDetailsData };
 };
 
 export type SplashScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'Splash'
+  "Splash"
 >;
 
 export type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'Home'
+  "Home"
 >;
 export type TimeLineScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'TimeLine'
+  "TimeLine"
 >;
 export type MapScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'Map'
+  "Map"
 >;
 export type SettingScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'Setting'
+  "Setting"
 >;
 export type TabScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'Tab'
+  "Tab"
 >;
 export type EventDetailsNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'EventDetails'
+  "EventDetails"
 >;
 
 const NavigationTypes = {
-  SPLASH: 'Splash',
-  HOME: 'Home',
-  TIMELINE: 'TimeLine',
-  MAP: 'Map',
-  SETTING: 'Setting',
-  TAB: 'Tab',
-  EVENT_DETAILS: 'EventDetails',
+  SPLASH: "Splash",
+  HOME: "Home",
+  TIMELINE: "TimeLine",
+  MAP: "Map",
+  SETTING: "Setting",
+  TAB: "Tab",
+  EVENT_DETAILS: "EventDetails",
 } as const;
 
 export default NavigationTypes;

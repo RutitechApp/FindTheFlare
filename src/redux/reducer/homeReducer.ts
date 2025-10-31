@@ -1,14 +1,37 @@
-import { GET_CME_DATA_FAILED, GET_CME_DATA_SUCCESS } from '../action/type';
+import { GET_CME_DATA_FAILED, GET_CME_DATA_SUCCESS } from "../action/type";
 
-const initialState = {
+interface CMEItem {
+  id: string;
+  name: string;
+  date: string;
+}
+
+interface HomeState {
+  CMEData: CMEItem[];
+  CMEError: string | null;
+}
+
+interface GetCMESuccessAction {
+  type: typeof GET_CME_DATA_SUCCESS;
+  payload: CMEItem[];
+}
+
+interface GetCMEFailedAction {
+  type: typeof GET_CME_DATA_FAILED;
+  payload: string;
+}
+
+type HomeAction = GetCMESuccessAction | GetCMEFailedAction;
+
+const initialState: HomeState = {
   CMEData: [],
   CMEError: null,
 };
 
 const homeReducer = (
-  state = initialState,
-  action: { type: string; payload: any },
-) => {
+  state: HomeState = initialState,
+  action: HomeAction
+): HomeState => {
   switch (action.type) {
     case GET_CME_DATA_SUCCESS:
       return {
@@ -16,11 +39,12 @@ const homeReducer = (
         CMEData: action.payload,
         CMEError: null,
       };
+
     case GET_CME_DATA_FAILED:
       return {
         ...state,
-        CMEData: action.payload,
-        CMEError: null,
+        CMEData: [],
+        CMEError: action.payload,
       };
 
     default:

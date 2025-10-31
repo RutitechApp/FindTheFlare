@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -6,18 +6,18 @@ import {
   Pressable,
   ScrollView,
   FlatList,
-} from 'react-native';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import colors from '../constants/colors';
+} from "react-native";
+import RBSheet from "react-native-raw-bottom-sheet";
+import colors from "../constants/colors";
 import {
   fontScale,
   horizontalScale,
   verticalScale,
-} from '../constants/responsive';
-import { CloseIcon } from '../assets/icons/HomeIcons';
-import fontConstants from '../constants/fontConstants';
-import TextCover from './TextCover';
-import EventCard from './EventCard';
+} from "../constants/responsive";
+import { CloseIcon } from "../assets/icons/HomeIcons";
+import fontConstants from "../constants/fontConstants";
+import TextCover from "./TextCover";
+import EventCard from "./EventCard";
 import {
   CalendarIcon,
   DurationIcon,
@@ -27,11 +27,11 @@ import {
   RegionIcon,
   TimeIcon,
   WarningIcon,
-} from '../assets/icons/EventIcons';
-import Button from './Button';
+} from "../assets/icons/EventIcons";
+import Button from "./Button";
 
 interface TimelineBottomSheetProps {
-  refRBSheet?: any;
+  refRBSheet?: React.RefObject<InstanceType<typeof RBSheet>>;
 }
 const EventData = [
   {
@@ -39,28 +39,28 @@ const EventData = [
     image: (
       <CalendarIcon height={verticalScale(20)} width={verticalScale(20)} />
     ),
-    title: 'Date',
-    value: '05/10/2025',
+    title: "Date",
+    value: "05/10/2025",
   },
   {
     id: 2,
     image: <TimeIcon height={verticalScale(20)} width={verticalScale(20)} />,
-    title: 'Time',
-    value: '13:00 UTC - 15:00 UTC',
+    title: "Time",
+    value: "13:00 UTC - 15:00 UTC",
   },
   {
     id: 3,
     image: (
       <DurationIcon height={verticalScale(20)} width={verticalScale(20)} />
     ),
-    title: 'Duration',
-    value: '6 hours',
+    title: "Duration",
+    value: "6 hours",
   },
   {
     id: 4,
     image: <ImpactIcon height={verticalScale(20)} width={verticalScale(20)} />,
-    title: 'Impact',
-    value: 'Geomagnetic Activity',
+    title: "Impact",
+    value: "Geomagnetic Activity",
   },
 ];
 const LocationData = [
@@ -69,22 +69,22 @@ const LocationData = [
     image: (
       <LatitudeIcon height={verticalScale(20)} width={verticalScale(20)} />
     ),
-    title: 'Latitude',
-    value: '45.20°',
+    title: "Latitude",
+    value: "45.20°",
   },
   {
     id: 2,
     image: (
       <LongitudeIcon height={verticalScale(20)} width={verticalScale(20)} />
     ),
-    title: 'Longitude',
-    value: '-12.50°',
+    title: "Longitude",
+    value: "-12.50°",
   },
   {
     id: 3,
     image: <RegionIcon height={verticalScale(20)} width={verticalScale(20)} />,
-    title: 'Region',
-    value: 'Europe/Asia',
+    title: "Region",
+    value: "Europe/Asia",
   },
 ];
 const TimelineBottomSheet: React.FC<TimelineBottomSheetProps> = ({
@@ -102,7 +102,7 @@ const TimelineBottomSheet: React.FC<TimelineBottomSheetProps> = ({
         container: [styles.containerStyle],
       }}
       customModalProps={{
-        animationType: 'slide',
+        animationType: "slide",
         statusBarTranslucent: true,
       }}
       customAvoidingViewProps={{
@@ -112,12 +112,12 @@ const TimelineBottomSheet: React.FC<TimelineBottomSheetProps> = ({
       <View style={styles.bottomViewStyle}>
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
+            flexDirection: "row",
+            alignItems: "center",
             gap: horizontalScale(6),
           }}
         >
-          <TextCover text={'CME'} />
+          <TextCover text={"CME"} />
           <TextCover text="MODERATE" />
         </View>
         <Pressable onPress={() => refRBSheet?.current?.close()}>
@@ -216,15 +216,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: horizontalScale(10),
     padding: horizontalScale(20),
   },
-  recentAlertStyle: {
-    fontSize: fontScale(18),
-    fontFamily: fontConstants.MULISH_BOLD,
-    color: colors.white,
-  },
+
   bottomViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   headerTextStyle: {
     fontSize: fontScale(20),
@@ -243,17 +239,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     marginTop: verticalScale(10),
   },
-  descTextStyle: {
-    color: colors.grey,
-    fontSize: fontScale(12),
-    fontFamily: fontConstants.MULISH_BOLD,
-    marginTop: verticalScale(8),
-  },
-  subRowStyle: {
-    flexDirection: 'row',
-    gap: horizontalScale(6),
-    marginTop: verticalScale(20),
-  },
+
   vStyle: {
     backgroundColor: colors.orange10Opacity,
     padding: horizontalScale(20),
@@ -261,8 +247,8 @@ const styles = StyleSheet.create({
     borderRadius: verticalScale(10),
   },
   vSubStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   modeTextStyle: {
     fontSize: fontScale(14),

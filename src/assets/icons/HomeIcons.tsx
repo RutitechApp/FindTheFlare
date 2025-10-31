@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import Svg, {
   Circle,
   ClipPath,
@@ -7,10 +7,9 @@ import Svg, {
   LinearGradient,
   Path,
   RadialGradient,
-  Rect,
   Stop,
   SvgProps,
-} from 'react-native-svg';
+} from "react-native-svg";
 
 export const MeteorIcon = (props: SvgProps) => {
   return (

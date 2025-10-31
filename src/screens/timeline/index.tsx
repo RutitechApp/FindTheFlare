@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -6,34 +6,39 @@ import {
   ScrollView,
   Pressable,
   FlatList,
-} from 'react-native';
-import Container from '../../components/Container';
+} from "react-native";
+import Container from "../../components/Container";
 import {
   fontScale,
   horizontalScale,
   verticalScale,
-} from '../../constants/responsive';
-import fontConstants from '../../constants/fontConstants';
-import colors from '../../constants/colors';
-import TabView from '../../components/TabView';
+} from "../../constants/responsive";
+import fontConstants from "../../constants/fontConstants";
+import colors from "../../constants/colors";
+import TabView from "../../components/TabView";
 import {
   tabData,
   timeLineCardData,
   timeLineData,
-} from '../../helpers/dummyData';
-import { Calendar } from 'react-native-calendars';
-import { Calendars } from '../../assets/icons/TimeLineIcons';
-import { Modal, PaperProvider, Portal } from 'react-native-paper';
-import Button from '../../components/Button';
-import TimeLineCard from '../../components/TimeLineCard';
-import TimelineBottomSheet from '../../components/TimelineBottomSheet';
+} from "../../helpers/dummyData";
+import { Calendar } from "react-native-calendars";
+import { Calendars } from "../../assets/icons/TimeLineIcons";
+import { Modal, PaperProvider, Portal } from "react-native-paper";
+import Button from "../../components/Button";
+import TimeLineCard from "../../components/TimeLineCard";
+import TimelineBottomSheet from "../../components/TimelineBottomSheet";
+
+interface RBSheetRef {
+  open: () => void;
+  close: () => void;
+}
 
 const TimeLineScreen = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [aIndex, setAIndex] = useState(0);
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState("");
   const [visible, setVisible] = useState(false);
-  const refRBSheet: any = useRef(null);
+  const refRBSheet = useRef<RBSheetRef | null>(null);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   return (
@@ -50,7 +55,7 @@ const TimeLineScreen = () => {
           </View>
           <TabView
             tabData={tabData}
-            onPress={index => setActiveIndex(index)}
+            onPress={(index) => setActiveIndex(index)}
             activeIndex={activeIndex}
           />
           <View style={{ marginTop: verticalScale(20) }}>
@@ -109,17 +114,17 @@ const TimeLineScreen = () => {
         <Modal
           visible={visible}
           onDismiss={hideModal}
-          style={{ backgroundColor: 'transparent' }}
+          style={{ backgroundColor: "transparent" }}
           contentContainerStyle={{
-            backgroundColor: '#323741',
+            backgroundColor: "#323741",
             width: horizontalScale(300),
             height: verticalScale(390),
-            alignSelf: 'center',
+            alignSelf: "center",
             borderRadius: horizontalScale(10),
           }}
         >
           <Calendar
-            onDayPress={day => {
+            onDayPress={(day) => {
               setSelected(day.dateString);
             }}
             markedDates={{
@@ -129,36 +134,36 @@ const TimeLineScreen = () => {
               },
             }}
             style={{
-              backgroundColor: '#323741',
-              justifyContent: 'center',
+              backgroundColor: "#323741",
+              justifyContent: "center",
             }}
             theme={{
-              calendarBackground: '#323741',
+              calendarBackground: "#323741",
               textDayStyle: {
-                color: 'white',
+                color: "white",
                 fontSize: fontScale(12.45),
                 lineHeight: verticalScale(19.92),
                 fontFamily: fontConstants.MULISH_BOLD,
               },
-              monthTextColor: '#656A78',
-              textDisabledColor: '#656A78',
-              dayTextColor: '#656A78',
+              monthTextColor: "#656A78",
+              textDisabledColor: "#656A78",
+              dayTextColor: "#656A78",
               selectedDayBackgroundColor: colors.darkOrange,
               textMonthFontSize: fontScale(12.45),
               textMonthFontFamily: fontConstants.MULISH_BOLD,
               textDayFontFamily: fontConstants.MULISH_BOLD,
-              textDayFontWeight: '500',
-              textMonthFontWeight: '500',
+              textDayFontWeight: "500",
+              textMonthFontWeight: "500",
               textDayHeaderFontFamily: fontConstants.MULISH_BOLD,
-              textDayHeaderFontWeight: '500',
+              textDayHeaderFontWeight: "500",
               textDayHeaderFontSize: fontScale(12.45),
             }}
           />
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
               marginHorizontal: horizontalScale(12),
             }}
           >
@@ -166,10 +171,10 @@ const TimeLineScreen = () => {
               title="Cancel"
               btnStyle={{
                 marginHorizontal: 0,
-                backgroundColor: '#272A32',
+                backgroundColor: "#272A32",
                 width: horizontalScale(120),
                 height: verticalScale(35),
-                justifyContent: 'center',
+                justifyContent: "center",
               }}
               onPress={hideModal}
             />
@@ -179,7 +184,7 @@ const TimeLineScreen = () => {
                 marginHorizontal: 0,
                 width: horizontalScale(120),
                 height: verticalScale(35),
-                justifyContent: 'center',
+                justifyContent: "center",
               }}
             />
           </View>
@@ -193,9 +198,9 @@ export default TimeLineScreen;
 
 const styles = StyleSheet.create({
   headerViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: verticalScale(20),
   },
   headerTextStyle: {

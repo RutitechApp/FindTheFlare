@@ -1,20 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import {
   fontScale,
   horizontalScale,
   verticalScale,
-} from '../constants/responsive';
-import { ForwardIcon } from '../assets/icons/HomeIcons';
-import fontConstants from '../constants/fontConstants';
-import colors from '../constants/colors';
+} from "../constants/responsive";
+import { ForwardIcon } from "../assets/icons/HomeIcons";
+import fontConstants from "../constants/fontConstants";
+import colors from "../constants/colors";
+import { EventDetailsData } from "../navigations/NavigationTypes";
 
 interface HomeSubCardProps {
-  data?: any;
+  data?: EventDetailsData;
   onPress?: () => void;
 }
 
 const HomeSubCard: React.FC<HomeSubCardProps> = ({ data, onPress }) => {
+  if (!data) return null;
   return (
     <TouchableOpacity style={styles.viewStyle} onPress={onPress}>
       <View style={styles.frontViewStyle}>
@@ -67,13 +69,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   frontViewStyle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     flex: 1,
   },
   mainViewStyle: {
-    flexDirection: 'row',
+    flexDirection: "row",
     flex: 1,
   },
   titleTextStyle: {
@@ -85,11 +87,11 @@ const styles = StyleSheet.create({
     fontFamily: fontConstants.MULISH_BOLD,
   },
   timeViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
     flexShrink: 1,
-    maxWidth: '30%',
+    maxWidth: "30%",
   },
   timeTextStyle: {
     color: colors.white,
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
   },
   vStyle: {
     backgroundColor: colors.orange10Opacity,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     paddingVertical: verticalScale(5),
     paddingHorizontal: horizontalScale(10),
     borderRadius: horizontalScale(5),
