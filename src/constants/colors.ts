@@ -1,0 +1,18 @@
+export default {
+  white10Opacity: 'rgba(255, 255, 255, 0.1)',
+  white: '#FFFFFF',
+  orange10Opacity: 'rgba(255, 167, 38, 0.1)',
+  orange: '#FFA726',
+  violet10Opacity: 'rgba(210, 174, 255, 0.1)',
+  violet: '#C597FF',
+  darkOrange10Opacity: 'rgba(255, 107, 0, 0.1)',
+  darkOrange: '#FF6B00',
+  grey: '#B3B3B3',
+  darkBlue: '#181A24',
+  yellow: '#FFE000',
+  yellow10Opacity: 'rgba(255, 224, 0, 0.1)',
+  blue: '#31BDFF',
+  blue10Opacity: 'rgba(49, 189, 255, 0.1)',
+  red: '#E5140D',
+  red10Opacity: 'rgba(229, 20, 13, 0.1)',
+};
