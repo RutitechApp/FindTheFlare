@@ -8,30 +8,42 @@ import {
 } from "../constants/responsive";
 import fontConstants from "../constants/fontConstants";
 
-interface EventTimeCardData {
-  value?: string;
-  label?: string;
-}
-
 interface EventTimeCardProps {
-  data?: EventTimeCardData[];
+  days?: number;
+  hours?: number;
+  minutes?: number;
+  seconds?: number;
 }
 
-const EventTimeCard: React.FC<EventTimeCardProps> = ({ data = [] }) => {
+const EventTimeCard: React.FC<EventTimeCardProps> = ({
+  days,
+  hours,
+  minutes,
+  seconds,
+}) => {
   return (
     <View style={styles.viewStyle}>
       <Text style={styles.textStyle}>TIME TO IMPACT</Text>
       <View style={styles.subViewStyle}>
-        {data.map((item, index) => (
-          <React.Fragment key={index}>
-            <View style={styles.vStyle}>
-              <Text style={styles.tStyle}>{item.value}</Text>
-              <Text style={styles.subTStyle}>{item.label}</Text>
-            </View>
-
-            {index < data.length - 1 && <View style={styles.lineViewStyle} />}
-          </React.Fragment>
-        ))}
+        <View style={styles.vStyle}>
+          <Text style={styles.tStyle}>{days}</Text>
+          <Text style={styles.subTStyle}>Days</Text>
+        </View>
+        <View style={styles.lineViewStyle} />
+        <View style={styles.vStyle}>
+          <Text style={styles.tStyle}>{hours}</Text>
+          <Text style={styles.subTStyle}>Hours</Text>
+        </View>
+        <View style={styles.lineViewStyle} />
+        <View style={styles.vStyle}>
+          <Text style={styles.tStyle}>{minutes}</Text>
+          <Text style={styles.subTStyle}>Minutes</Text>
+        </View>
+        <View style={styles.lineViewStyle} />
+        <View style={styles.vStyle}>
+          <Text style={styles.tStyle}>{seconds}</Text>
+          <Text style={styles.subTStyle}>Seconds</Text>
+        </View>
       </View>
     </View>
   );

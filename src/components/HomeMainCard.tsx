@@ -1,30 +1,67 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import {
   ForwardIcon,
+  GeoMagneticStormIcon,
   HomeCardIcon,
   LeafIcon,
   MeteorIcon,
-} from '../assets/icons/HomeIcons';
+  SolarFlareIcon,
+} from "../assets/icons/HomeIcons";
 import {
   fontScale,
   horizontalScale,
   verticalScale,
-} from '../constants/responsive';
-import fontConstants from '../constants/fontConstants';
-import colors from '../constants/colors';
+} from "../constants/responsive";
+import fontConstants from "../constants/fontConstants";
+import colors from "../constants/colors";
+import { getTimeToImpact } from "../constants/constants";
 
-const HomeMainCard = () => {
+interface HomeMainCardProps {
+  data?: any;
+  onPress?: () => void;
+}
+
+const HomeMainCard: React.FC<HomeMainCardProps> = ({ data, onPress }) => {
   return (
-    <View style={styles.viewStyle}>
+    <Pressable style={styles.viewStyle} onPress={onPress}>
       <View style={styles.rowViewStyle}>
         <View style={styles.rowSubViewStyle}>
-          <View style={styles.vStyle}>
-            <MeteorIcon width={verticalScale(34)} height={verticalScale(34)} />
+          <View
+            style={[
+              styles.vStyle,
+              {
+                backgroundColor:
+                  data?.name === "Coronal Mass Ejection " ||
+                  "Coronal Mass Ejection"
+                    ? colors.violet10Opacity
+                    : data?.name === "Solar Flare"
+                    ? colors.yellow10Opacity
+                    : colors.blue10Opacity,
+              },
+            ]}
+          >
+            {data?.name === "Coronal Mass Ejection " ||
+            "Coronal Mass Ejection" ? (
+              <MeteorIcon
+                width={verticalScale(34)}
+                height={verticalScale(34)}
+              />
+            ) : data?.name === "Solar Flare" ? (
+              <SolarFlareIcon
+                width={verticalScale(34)}
+                height={verticalScale(34)}
+              />
+            ) : (
+              <GeoMagneticStormIcon
+                width={verticalScale(34)}
+                height={verticalScale(34)}
+              />
+            )}
           </View>
           <View style={{ marginLeft: horizontalScale(10) }}>
-            <Text style={styles.textStyle}>Meteor Shower</Text>
-            <Text style={styles.subTextStyle}>Speed: 750km/s</Text>
+            <Text style={styles.textStyle}>{data?.name}</Text>
+            <Text style={styles.subTextStyle}>Speed: {data?.speed}km/s</Text>
           </View>
         </View>
         <View>
@@ -39,7 +76,9 @@ const HomeMainCard = () => {
               transform: [{ scaleX: -1 }],
             }}
           />
-          <Text style={styles.timeTextStyle}>18H 31M</Text>
+          <Text style={styles.timeTextStyle}>
+            {getTimeToImpact(data?.startDate, data?.time)}
+          </Text>
           <LeafIcon />
         </View>
       </View>
@@ -48,7 +87,7 @@ const HomeMainCard = () => {
         height={verticalScale(10)}
         style={styles.cardIconStyle}
       />
-    </View>
+    </Pressable>
   );
 };
 
@@ -62,18 +101,18 @@ const styles = StyleSheet.create({
     padding: verticalScale(14),
   },
   rowViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   rowSubViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   vStyle: {
-    backgroundColor: colors.violet10Opacity,
-    padding: verticalScale(13),
+    padding: verticalScale(8),
     borderRadius: verticalScale(10),
+    overflow: "hidden",
   },
   textStyle: {
     fontSize: fontScale(16),
@@ -87,13 +126,13 @@ const styles = StyleSheet.create({
   },
   subViewStyle: {
     backgroundColor: colors.white10Opacity,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: verticalScale(15),
     borderRadius: verticalScale(10),
     paddingVertical: verticalScale(15),
   },
   cardIconStyle: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: verticalScale(15),
   },
   timeTextStyle: {
@@ -103,8 +142,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(5),
   },
   timeViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: verticalScale(6),
   },
   tStyle: {

@@ -1,160 +1,164 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Text, View, FlatList, Pressable, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import RBSheet from "react-native-raw-bottom-sheet";
 import Container from "../../components/Container";
 import HomeHeader from "../../components/HomeHeader";
 import HomeMainCard from "../../components/HomeMainCard";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import HomeSubCard from "../../components/HomeSubCard";
+import { recentData } from "../../helpers/dummyData";
+import { useDispatch, useSelector } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
+import { RootState } from "../../redux/store/store";
+import {
+  getCMEAction,
+  getFLRAction,
+  getGSTAction,
+} from "../../redux/action/homeAction";
+import { getMonthRange } from "../../constants/constants";
+import NavigationTypes, {
+  HomeScreenNavigationProp,
+} from "../../navigations/NavigationTypes";
+import { CloseIcon, ForwardIcon } from "../../assets/icons/HomeIcons";
 import {
   fontScale,
   horizontalScale,
   verticalScale,
 } from "../../constants/responsive";
 import fontConstants from "../../constants/fontConstants";
-import { recentData, upcomingData } from "../../helpers/dummyData";
-import HomeSubCard from "../../components/HomeSubCard";
-import RBSheet from "react-native-raw-bottom-sheet";
-import { CloseIcon, ForwardIcon } from "../../assets/icons/HomeIcons";
 import colors from "../../constants/colors";
-import { useNavigation } from "@react-navigation/native";
-import NavigationTypes, {
-  HomeScreenNavigationProp,
-} from "../../navigations/NavigationTypes";
 
 interface RBSheetRef {
-  open: () => void;
-  close: () => void;
+  open?: () => void;
+  close?: () => void;
 }
 
 const HomeScreen = () => {
-  const refRBSheet = useRef<RBSheetRef | null>(null);
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  // const dispatch: Dispatch = useDispatch();
-  // const CMEDATA = useSelector((state: any) => state?.home?.CMEData);
-  // console.log('CMEDATA', CMEDATA);
-  // const now = new Date();
+  const refRBSheet = useRef<RBSheetRef>(null);
+  const dispatch: ThunkDispatch<RootState, void, any> = useDispatch();
+  const { CMEData, FLRData, GSTData } = useSelector((state: any) => state.home);
+  const [latestData, setLatestData] = useState<any>(null);
+  const [upcomingData, setUpcomingData] = useState<any[]>([]);
+  console.log("GSTData", latestData);
+  useEffect(() => {
+    const now = new Date();
+    const { startDate, endDate } = getMonthRange(
+      now.getFullYear(),
+      now.getMonth() + 1
+    );
 
-  // const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
-  //   .toISOString()
-  //   .split('T')[0];
+    const payload = {
+      data: { startDate, endDate },
+      onSuccess: () => {},
+      onFail: () => {},
+    };
 
-  // const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-  //   .toISOString()
-  //   .split('T')[0];
+    dispatch(getCMEAction(payload));
+    dispatch(getFLRAction(payload));
+    dispatch(getGSTAction(payload));
+  }, []);
 
-  // const latestEvent = CMEDATA?.reduce((latest, current) => {
-  //   return new Date(current?.submissionTime) > new Date(latest?.submissionTime)
-  //     ? current
-  //     : latest;
-  // });
+  useEffect(() => {
+    if (CMEData?.length) {
+      setLatestData(
+        CMEData.reduce((a: any, b: any) =>
+          new Date(b.time) > new Date(a.time) ? b : a
+        )
+      );
+    }
+  }, [CMEData]);
 
-  // console.log('latestEvent', latestEvent);
+  useEffect(() => {
+    const now = new Date();
+    let nextEvents: any[] = [];
 
-  // useEffect(() => {
-  //   const obj = {
-  //     data: {
-  //       startDate: startDate,
-  //       endDate: endDate,
-  //       apiKey: 'd0dLQacxalBN2QZ5ceAcZTeWGcVEX45yMoNZaB5g',
-  //     },
-  //     onSuccess: (res?: any) => {},
-  //     onFail: (err?: any) => {},
-  //   };
-  //   dispatch(getCMEAction(obj));
-  // }, []);
+    if (CMEData?.length) {
+      const nextCME = CMEData.filter((e) => new Date(e.time) > now).sort(
+        (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
+      )[0];
+      if (nextCME) nextEvents.push(nextCME);
+    }
+
+    if (FLRData?.length) {
+      const nextFLR = FLRData.filter((e) => new Date(e.startDate) > now).sort(
+        (a, b) =>
+          new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      )[0];
+      if (nextFLR) nextEvents.push(nextFLR);
+    }
+
+    setUpcomingData(nextEvents);
+  }, [CMEData, FLRData]);
+
   return (
     <Container>
-      <HomeHeader
-        onNotificationPress={() => {
-          refRBSheet?.current?.open();
-        }}
+      <HomeHeader onNotificationPress={() => refRBSheet.current?.open?.()} />
+      <HomeMainCard
+        data={latestData}
+        onPress={() =>
+          navigation.navigate(NavigationTypes.EVENT_DETAILS, {
+            data: latestData,
+          })
+        }
       />
-      <HomeMainCard />
       <Text style={styles.textStyle}>Upcoming Events</Text>
       <FlatList
         data={upcomingData}
         style={styles.flatListStyle}
-        alwaysBounceVertical={false}
+        renderItem={({ item }) => (
+          <HomeSubCard
+            data={item}
+            onPress={() =>
+              navigation.navigate(NavigationTypes.EVENT_DETAILS, { data: item })
+            }
+          />
+        )}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          return (
-            <HomeSubCard
-              data={item}
-              onPress={() =>
-                navigation.navigate(NavigationTypes.EVENT_DETAILS, {
-                  data: item,
-                })
-              }
-            />
-          );
-        }}
       />
       <RBSheet
         ref={refRBSheet}
-        useNativeDriver={true}
+        useNativeDriver
         customStyles={{
-          wrapper: {
-            backgroundColor: colors.white10Opacity,
-          },
-
-          container: [styles.containerStyle],
+          wrapper: { backgroundColor: colors.white10Opacity },
+          container: styles.bottomContainer,
         }}
         customModalProps={{
           animationType: "slide",
           statusBarTranslucent: true,
         }}
-        customAvoidingViewProps={{
-          enabled: false,
-        }}
       >
-        <View style={styles.bottomViewStyle}>
+        <View style={styles.bottomHeader}>
           <Text style={styles.recentAlertStyle}>Recent Alerts</Text>
-          <Pressable onPress={() => refRBSheet?.current?.close()}>
+          <Pressable onPress={() => refRBSheet.current?.close?.()}>
             <CloseIcon />
           </Pressable>
         </View>
         <FlatList
           data={recentData}
-          style={{ marginTop: verticalScale(20) }}
           contentContainerStyle={{
             gap: horizontalScale(15),
+            marginTop: verticalScale(20),
           }}
-          renderItem={({ item }) => {
-            return (
-              <View style={styles.subVStyle}>
-                <View style={styles.vStyle}>
-                  <View style={styles.imageStyle}>{item.image}</View>
-                  <View style={styles.viewStyle}>
-                    <Text
-                      style={[
-                        {
-                          color: item?.color,
-                        },
-                        styles.titleTextStyle,
-                      ]}
-                    >
-                      {item.title}
-                    </Text>
-                    <Text
-                      style={[
-                        {
-                          color: item?.color,
-                        },
-                        styles.typeTextStyle,
-                      ]}
-                    >
-                      {item.type}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.timeViewStyle}>
-                  <Text style={styles.timeTextStyle}>{item.time}</Text>
-                  <ForwardIcon
-                    width={horizontalScale(16)}
-                    height={horizontalScale(16)}
-                  />
+          renderItem={({ item }) => (
+            <View style={styles.alertItem}>
+              <View style={styles.alertLeft}>
+                <View style={styles.imageStyle}>{item.image}</View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.alertTitle, { color: item.color }]}>
+                    {item.title}
+                  </Text>
+                  <Text style={[styles.alertType, { color: item.color }]}>
+                    {item.type}
+                  </Text>
                 </View>
               </View>
-            );
-          }}
+              <View style={styles.timeContainer}>
+                <Text style={styles.timeText}>{item.time}</Text>
+                <ForwardIcon width={16} height={16} />
+              </View>
+            </View>
+          )}
         />
       </RBSheet>
     </Container>
@@ -170,29 +174,36 @@ const styles = StyleSheet.create({
     color: colors.white,
     marginHorizontal: horizontalScale(20),
   },
-  timeTextStyle: {
-    fontSize: fontScale(12),
+  flatListStyle: {
+    marginHorizontal: horizontalScale(20),
+    marginBottom: verticalScale(70),
+  },
+
+  bottomContainer: {
+    height: verticalScale(240),
+    backgroundColor: colors.darkBlue,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    padding: horizontalScale(20),
+  },
+  bottomHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  recentAlertStyle: {
+    fontSize: fontScale(18),
     fontFamily: fontConstants.MULISH_BOLD,
     color: colors.white,
-    marginRight: horizontalScale(5),
-    flexShrink: 1,
   },
-  timeViewStyle: {
+
+  alertItem: {
     flexDirection: "row",
-    alignItems: "center",
-    flexShrink: 1,
-    maxWidth: "30%",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
-  typeTextStyle: {
-    fontSize: fontScale(12),
-    fontFamily: fontConstants.MULISH_BOLD,
-  },
-  titleTextStyle: {
-    fontSize: fontScale(16),
-    fontFamily: fontConstants.MULISH_BOLD,
-  },
-  viewStyle: {
-    marginLeft: horizontalScale(15),
+  alertLeft: {
+    flexDirection: "row",
     flex: 1,
   },
   imageStyle: {
@@ -200,38 +211,26 @@ const styles = StyleSheet.create({
     width: verticalScale(42),
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 12,
   },
-  vStyle: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    flex: 1,
-  },
-  subVStyle: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    flex: 1,
-  },
-  recentAlertStyle: {
-    fontSize: fontScale(18),
+  alertTitle: {
+    fontSize: fontScale(16),
     fontFamily: fontConstants.MULISH_BOLD,
-    color: colors.white,
   },
-  bottomViewStyle: {
+  alertType: {
+    fontSize: fontScale(12),
+    fontFamily: fontConstants.MULISH_BOLD,
+  },
+
+  timeContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    maxWidth: "30%",
   },
-  containerStyle: {
-    height: verticalScale(240),
-    backgroundColor: colors.darkBlue,
-    borderTopLeftRadius: horizontalScale(10),
-    borderTopRightRadius: horizontalScale(10),
-    padding: horizontalScale(20),
-  },
-  flatListStyle: {
-    marginHorizontal: horizontalScale(20),
-    marginBottom: verticalScale(70),
+  timeText: {
+    fontSize: fontScale(12),
+    fontFamily: fontConstants.MULISH_BOLD,
+    color: colors.white,
+    marginRight: 5,
   },
 });

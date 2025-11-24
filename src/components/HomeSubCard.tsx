@@ -5,13 +5,19 @@ import {
   horizontalScale,
   verticalScale,
 } from "../constants/responsive";
-import { ForwardIcon } from "../assets/icons/HomeIcons";
+import {
+  ForwardIcon,
+  GeoMagneticStormIcon,
+  MeteorIcon,
+  SolarFlareIcon,
+} from "../assets/icons/HomeIcons";
 import fontConstants from "../constants/fontConstants";
 import colors from "../constants/colors";
-import { EventDetailsData } from "../navigations/NavigationTypes";
+import { getDuration } from "../constants/constants";
+import TextCover from "./TextCover";
 
 interface HomeSubCardProps {
-  data?: EventDetailsData;
+  data?: any;
   onPress?: () => void;
 }
 
@@ -21,39 +27,78 @@ const HomeSubCard: React.FC<HomeSubCardProps> = ({ data, onPress }) => {
     <TouchableOpacity style={styles.viewStyle} onPress={onPress}>
       <View style={styles.frontViewStyle}>
         <View style={styles.mainViewStyle}>
-          <View>{data.image}</View>
-          <View style={{ marginLeft: horizontalScale(15) }}>
+          <View>
+            {data?.name === "Coronal Mass Ejection" ? (
+              <MeteorIcon
+                width={horizontalScale(38)}
+                height={horizontalScale(38)}
+              />
+            ) : data?.name === "Solar Flare" ? (
+              <SolarFlareIcon
+                width={horizontalScale(38)}
+                height={horizontalScale(38)}
+              />
+            ) : (
+              <GeoMagneticStormIcon
+                width={horizontalScale(38)}
+                height={horizontalScale(38)}
+              />
+            )}
+          </View>
+          <View style={{ marginLeft: horizontalScale(15), flex: 1 }}>
             <Text
               style={[
                 {
-                  color: data?.color,
+                  color:
+                    data?.name === "Coronal Mass Ejection"
+                      ? colors.violet
+                      : data?.name === "Solar Flare"
+                      ? colors.yellow
+                      : colors.blue,
                 },
                 styles.titleTextStyle,
               ]}
             >
-              {data.title}
+              {data?.name}
             </Text>
             <Text
               style={[
                 {
-                  color: data?.color,
+                  color:
+                    data?.name === "Coronal Mass Ejection"
+                      ? colors.violet
+                      : data?.name === "Solar Flare"
+                      ? colors.yellow
+                      : colors.blue,
                 },
                 styles.typeTextStyle,
               ]}
             >
-              {data.type}
+              Class, {data?.class}
             </Text>
           </View>
         </View>
         <View style={styles.timeViewStyle}>
-          <Text style={styles.timeTextStyle}>{data.time}</Text>
+          <Text style={styles.timeTextStyle}>
+            {getDuration(data?.startDate, data?.submissionDate)} to go
+          </Text>
           <ForwardIcon height={verticalScale(16)} width={verticalScale(16)} />
         </View>
       </View>
-      <Text style={styles.descriptionTextStyle}>{data?.description}</Text>
-      <View style={styles.vStyle}>
-        <Text style={styles.mStyle}>MODERATE</Text>
-      </View>
+      <Text style={styles.descriptionTextStyle}>
+        {data?.name === "Coronal Mass Ejection"
+          ? data?.description
+          : `A ${data.class}-class solar flare occurred at location ${
+              data.location
+            }, starting at ${new Date(
+              data.startDate
+            ).toUTCString()}, peaking at ${new Date(
+              data.peakTime
+            ).toUTCString()}, and ending at ${new Date(
+              data.endTime
+            ).toUTCString()}.`}
+      </Text>
+      <TextCover text={data?.type} vStyle={{ alignSelf: "flex-end" }} />
     </TouchableOpacity>
   );
 };
@@ -90,8 +135,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
-    flexShrink: 1,
-    maxWidth: "30%",
+    flexShrink: 2,
+    maxWidth: "25%",
   },
   timeTextStyle: {
     color: colors.white,
@@ -116,5 +161,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(10),
     color: colors.orange,
     fontFamily: fontConstants.MULISH_BOLD,
+    textTransform: "uppercase",
+    maxWidth: "100%",
   },
 });

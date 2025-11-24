@@ -1,19 +1,24 @@
-import { GET_CME_DATA_FAILED, GET_CME_DATA_SUCCESS } from "../action/type";
-
-interface CMEItem {
-  id: string;
-  name: string;
-  date: string;
-}
+import {
+  GET_CME_DATA_FAILED,
+  GET_CME_DATA_SUCCESS,
+  GET_FLR_DATA_FAILED,
+  GET_FLR_DATA_SUCCESS,
+  GET_GST_DATA_FAILED,
+  GET_GST_DATA_SUCCESS,
+} from "../action/type";
 
 interface HomeState {
-  CMEData: CMEItem[];
+  CMEData: any[];
   CMEError: string | null;
+  FLRData: any[];
+  FLRError: string | null;
+  GSTData: any[];
+  GSTError: string | null;
 }
 
 interface GetCMESuccessAction {
   type: typeof GET_CME_DATA_SUCCESS;
-  payload: CMEItem[];
+  payload: any[];
 }
 
 interface GetCMEFailedAction {
@@ -21,11 +26,21 @@ interface GetCMEFailedAction {
   payload: string;
 }
 
-type HomeAction = GetCMESuccessAction | GetCMEFailedAction;
+type HomeAction =
+  | { type: typeof GET_CME_DATA_SUCCESS; payload: any[] }
+  | { type: typeof GET_CME_DATA_FAILED; payload: string }
+  | { type: typeof GET_FLR_DATA_SUCCESS; payload: any[] }
+  | { type: typeof GET_FLR_DATA_FAILED; payload: string }
+  | { type: typeof GET_GST_DATA_SUCCESS; payload: any[] }
+  | { type: typeof GET_GST_DATA_FAILED; payload: string };
 
 const initialState: HomeState = {
   CMEData: [],
   CMEError: null,
+  FLRData: [],
+  FLRError: null,
+  GSTData: [],
+  GSTError: null,
 };
 
 const homeReducer = (
@@ -46,6 +61,15 @@ const homeReducer = (
         CMEData: [],
         CMEError: action.payload,
       };
+    case GET_FLR_DATA_SUCCESS:
+      return { ...state, FLRData: action.payload, FLRError: null };
+    case GET_FLR_DATA_FAILED:
+      return { ...state, FLRData: [], FLRError: action.payload };
+
+    case GET_GST_DATA_SUCCESS:
+      return { ...state, GSTData: action.payload, GSTError: null };
+    case GET_GST_DATA_FAILED:
+      return { ...state, GSTData: [], GSTError: action.payload };
 
     default:
       return state;

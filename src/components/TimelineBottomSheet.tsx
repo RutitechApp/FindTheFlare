@@ -29,6 +29,10 @@ import {
   WarningIcon,
 } from "../assets/icons/EventIcons";
 import Button from "./Button";
+import NavigationTypes, {
+  EventDetailsNavigationProp,
+} from "../navigations/NavigationTypes";
+import { useNavigation } from "@react-navigation/native";
 
 interface TimelineBottomSheetProps {
   refRBSheet?: React.RefObject<InstanceType<typeof RBSheet>>;
@@ -90,6 +94,7 @@ const LocationData = [
 const TimelineBottomSheet: React.FC<TimelineBottomSheetProps> = ({
   refRBSheet,
 }) => {
+  const navigation = useNavigation<EventDetailsNavigationProp>();
   return (
     <RBSheet
       ref={refRBSheet}
@@ -201,7 +206,10 @@ const TimelineBottomSheet: React.FC<TimelineBottomSheetProps> = ({
           </Text>
         </View>
       </ScrollView>
-      <Button title="View On Map" />
+      <Button
+        title="View On Map"
+        onPress={() => navigation.navigate(NavigationTypes.MAP)}
+      />
     </RBSheet>
   );
 };

@@ -18,7 +18,6 @@ export const makeAPIRequest = async <T = unknown>(
       data,
       params,
     };
-
     const response = await axios(options);
 
     if (response.status === 200 || response.status === 201) {

@@ -12,10 +12,12 @@ interface EventCardData {
 }
 
 interface EventCardProps {
-  data?: EventCardData;
+  image?: ReactNode;
+  title?: String;
+  value?: String;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ data }) => {
+const EventCard: React.FC<EventCardProps> = ({ image, title, value }) => {
   return (
     <View
       style={{
@@ -25,7 +27,7 @@ const EventCard: React.FC<EventCardProps> = ({ data }) => {
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        {data?.image}
+        {image}
         <Text
           style={{
             fontSize: fontScale(12),
@@ -34,7 +36,7 @@ const EventCard: React.FC<EventCardProps> = ({ data }) => {
             marginLeft: horizontalScale(5),
           }}
         >
-          {data?.title}
+          {title}
         </Text>
       </View>
       <View style={{ maxWidth: "50%" }}>
@@ -46,7 +48,7 @@ const EventCard: React.FC<EventCardProps> = ({ data }) => {
             marginLeft: horizontalScale(5),
           }}
         >
-          {data?.value}
+          {value}
         </Text>
       </View>
     </View>

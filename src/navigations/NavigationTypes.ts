@@ -14,10 +14,11 @@ export type RootStackParamList = {
   Splash: undefined;
   Home: undefined;
   TimeLine: undefined;
-  Map: undefined;
+  Map: { data?: any };
   Setting: undefined;
   Tab: undefined;
   EventDetails: { data?: EventDetailsData };
+  History: undefined;
 };
 
 export type SplashScreenNavigationProp = NativeStackNavigationProp<
@@ -49,6 +50,10 @@ export type EventDetailsNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "EventDetails"
 >;
+export type HistoryNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "History"
+>;
 
 const NavigationTypes = {
   SPLASH: "Splash",
@@ -58,6 +63,7 @@ const NavigationTypes = {
   SETTING: "Setting",
   TAB: "Tab",
   EVENT_DETAILS: "EventDetails",
+  HISTORY: "History",
 } as const;
 
 export default NavigationTypes;

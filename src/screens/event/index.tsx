@@ -1,111 +1,63 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 import {
   Animated,
-  FlatList,
   ImageBackground,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
-} from 'react-native';
-import Container from '../../components/Container';
-import { ForwardIcon, WindIcon } from '../../assets/icons/HomeIcons';
-import {
-  fontScale,
-  horizontalScale,
-  verticalScale,
-} from '../../constants/responsive';
-import fontConstants from '../../constants/fontConstants';
-import colors from '../../constants/colors';
-import imageConstants from '../../constants/imageConstants';
-import { useNavigation } from '@react-navigation/native';
-import EventTimeCard from '../../components/EventTimeCard';
-import TextCover from '../../components/TextCover';
+} from "react-native";
+import Container from "../../components/Container";
+import { fontScale, horizontalScale } from "../../constants/responsive";
+import { ForwardIcon, WindIcon } from "../../assets/icons/HomeIcons";
 import {
   CalendarIcon,
   DurationIcon,
-  ImpactIcon,
   LatitudeIcon,
   LongitudeIcon,
   RegionIcon,
   TimeIcon,
   WarningIcon,
-} from '../../assets/icons/EventIcons';
-import EventCard from '../../components/EventCard';
-import Button from '../../components/Button';
+} from "../../assets/icons/EventIcons";
+import fontConstants from "../../constants/fontConstants";
+import colors from "../../constants/colors";
+import imageConstants from "../../constants/imageConstants";
+import {
+  formatToDDMMYYYY,
+  getDuration,
+  getTimeFromISO,
+  getTimeToImpact,
+  parseLocation,
+  parseTimeString,
+} from "../../constants/constants";
+import EventTimeCard from "../../components/EventTimeCard";
+import TextCover from "../../components/TextCover";
+import EventCard from "../../components/EventCard";
+import Button from "../../components/Button";
+import NavigationTypes from "../../navigations/NavigationTypes";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const EventDetailsScreen = () => {
   const navigation = useNavigation();
-  const data = [
-    { value: '06', label: 'Days' },
-    { value: '21', label: 'Hours' },
-    { value: '16', label: 'Minutes' },
-    { value: '07', label: 'Seconds' },
-  ];
+  const { params } = useRoute();
+  const data = params?.data;
 
-  const EventData = [
-    {
-      id: 1,
-      image: (
-        <CalendarIcon height={verticalScale(20)} width={verticalScale(20)} />
-      ),
-      title: 'Date',
-      value: '05/10/2025',
-    },
-    {
-      id: 2,
-      image: <TimeIcon height={verticalScale(20)} width={verticalScale(20)} />,
-      title: 'Time',
-      value: '13:00 UTC - 15:00 UTC',
-    },
-    {
-      id: 3,
-      image: (
-        <DurationIcon height={verticalScale(20)} width={verticalScale(20)} />
-      ),
-      title: 'Duration',
-      value: '6 hours',
-    },
-    {
-      id: 4,
-      image: (
-        <ImpactIcon height={verticalScale(20)} width={verticalScale(20)} />
-      ),
-      title: 'Impact',
-      value: 'Geomagnetic Activity',
-    },
-  ];
-  const LocationData = [
-    {
-      id: 1,
-      image: (
-        <LatitudeIcon height={verticalScale(20)} width={verticalScale(20)} />
-      ),
-      title: 'Latitude',
-      value: '45.20°',
-    },
-    {
-      id: 2,
-      image: (
-        <LongitudeIcon height={verticalScale(20)} width={verticalScale(20)} />
-      ),
-      title: 'Longitude',
-      value: '-12.50°',
-    },
-    {
-      id: 3,
-      image: (
-        <RegionIcon height={verticalScale(20)} width={verticalScale(20)} />
-      ),
-      title: 'Region',
-      value: 'Europe/Asia',
-    },
-  ];
+  const isCME = data?.name === "Coronal Mass Ejection";
+  const isFLR = data?.name === "Solar Flare";
+
+  const impactTime = getTimeToImpact(
+    data?.startDate,
+    isCME ? data?.time : data?.endTime
+  );
+
+  const { days, hours, minutes, seconds } = parseTimeString(impactTime);
+
+  const { latitude, longitude } = isFLR ? parseLocation(data?.location) : data;
 
   const translateX = useRef(new Animated.Value(0)).current;
 
-  const startAnimation = () => {
+  const animateFlare = () => {
     Animated.sequence([
       Animated.timing(translateX, {
         toValue: horizontalScale(220),
@@ -117,191 +69,186 @@ const EventDetailsScreen = () => {
         duration: 0,
         useNativeDriver: true,
       }),
-    ]).start(() => startAnimation());
+    ]).start(() => animateFlare());
   };
 
   useEffect(() => {
-    startAnimation();
+    animateFlare();
   }, []);
+
   return (
     <Container style={{ marginHorizontal: horizontalScale(20) }}>
-      <View style={styles.headerViewStyle}>
+      <View style={styles.header}>
         <Pressable onPress={() => navigation.goBack()}>
-          <ForwardIcon
-            style={{
-              transform: [{ scaleX: -1 }],
-            }}
-            width={horizontalScale(22)}
-            height={horizontalScale(22)}
-          />
+          <ForwardIcon style={{ transform: [{ scaleX: -1 }] }} />
         </Pressable>
-        <Text style={styles.headerTextStyle}>Meteor Shower</Text>
+        <Text style={styles.headerText}>{data?.name}</Text>
         <View />
       </View>
-      <ScrollView
-        style={{ marginVertical: verticalScale(20) }}
-        showsVerticalScrollIndicator={false}
-      >
-        <EventTimeCard data={data} />
-        <ImageBackground
-          source={imageConstants.event}
-          style={styles.imageBgStyle}
-        >
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <EventTimeCard {...{ days, hours, minutes, seconds }} />
+
+        <ImageBackground source={imageConstants.event} style={styles.imageBg}>
           <Animated.Image
             source={imageConstants.flare}
-            style={[
-              {
-                transform: [{ translateX }],
-              },
-              styles.imageStyle,
-            ]}
+            style={[styles.flareImg, { transform: [{ translateX }] }]}
             resizeMode="contain"
           />
         </ImageBackground>
-        <View style={styles.rowStyle}>
-          <WindIcon width={horizontalScale(15)} height={verticalScale(12)} />
-          <Text style={styles.textStyle}>750km/s</Text>
+
+        <View style={styles.rowCenter}>
+          <WindIcon width={15} height={12} />
+          <Text style={styles.speedText}>{data?.speed}km/s</Text>
         </View>
-        <View style={styles.subRowStyle}>
-          <TextCover text={'CME'} />
-          <TextCover text={'MODERATE'} />
+
+        <View style={styles.tagRow}>
+          <TextCover text={isCME ? "CME" : isFLR ? "FLR" : "GST"} />
+          <TextCover text={data?.type} />
         </View>
-        <Text style={styles.titleTextStyle}>Meteor Shower</Text>
-        <Text style={styles.descTextStyle}>
-          Faint CME seen to the East in SOHO LASCO C2 only. Source is uncertain;
-          there is no clear source in available UV imagery of the disk.
+
+        <Text style={styles.title}>{data?.name}</Text>
+        <Text style={styles.desc}>
+          {isCME
+            ? data?.description
+            : `A ${data?.class}-class solar flare occurred at ${data?.location}.`}
         </Text>
-        <Text style={styles.titleTextStyle}>Event Details</Text>
-        <FlatList
-          data={EventData}
-          contentContainerStyle={{
-            gap: horizontalScale(10),
-          }}
-          scrollEnabled={false}
-          style={styles.flatListStyle}
-          renderItem={({ item }) => {
-            return <EventCard data={item} />;
-          }}
-        />
-        <Text style={styles.titleTextStyle}>Location Information</Text>
-        <FlatList
-          data={LocationData}
-          contentContainerStyle={{
-            gap: horizontalScale(10),
-          }}
-          style={styles.flatListStyle}
-          scrollEnabled={false}
-          renderItem={({ item }) => {
-            return <EventCard data={item} />;
-          }}
-        />
-        <Text style={styles.titleTextStyle}>Impact Assessment</Text>
-        <View style={styles.vStyle}>
-          <View style={styles.vSubStyle}>
-            <WarningIcon width={verticalScale(20)} height={verticalScale(20)} />
-            <Text style={styles.modeTextStyle}>Moderate Level Event</Text>
+
+        <Text style={styles.title}>Event Details</Text>
+        <View style={styles.cardBox}>
+          <EventCard
+            title="Date"
+            value={formatToDDMMYYYY(data?.startDate)}
+            image={<CalendarIcon />}
+          />
+          <EventCard
+            title="Time"
+            value={
+              isCME
+                ? getTimeFromISO(data?.time)
+                : getTimeFromISO(data?.peakTime)
+            }
+            image={<TimeIcon />}
+          />
+          <EventCard
+            title="Duration"
+            value={getDuration(data?.startDate, data?.submissionDate)}
+            image={<DurationIcon />}
+          />
+        </View>
+
+        <Text style={styles.title}>Location Info</Text>
+        <View style={styles.cardBox}>
+          <EventCard
+            title="Latitude"
+            value={latitude}
+            image={<LatitudeIcon />}
+          />
+          <EventCard
+            title="Longitude"
+            value={longitude}
+            image={<LongitudeIcon />}
+          />
+          <EventCard
+            title="Region"
+            value={data?.location}
+            image={<RegionIcon />}
+          />
+        </View>
+
+        <Text style={styles.title}>Impact Assessment</Text>
+        <View style={styles.impactBox}>
+          <View style={styles.rowCenter}>
+            <WarningIcon />
+            <Text style={styles.moderateText}>Moderate Level Event</Text>
           </View>
-          <Text
-            style={{
-              fontSize: fontScale(12),
-              fontFamily: fontConstants.MULISH_BOLD,
-              color: colors.grey,
-              paddingVertical: verticalScale(10),
-            }}
-          >
-            Geomagnetic activity expected
-          </Text>
-          <Text
-            style={{
-              fontSize: fontScale(12),
-              fontFamily: fontConstants.MULISH_BOLD,
-              color: colors.grey,
-            }}
-          >
-            Monitor satellite operations and GPS accuracy. Enhanced aurora
-            activity possible at high latitudes.
+          <Text style={styles.impactText}>Geomagnetic activity expected</Text>
+          <Text style={styles.impactText}>
+            Possible GPS issues and high-latitude auroras.
           </Text>
         </View>
-        <Button title="View On Map" />
+
+        <Button
+          title="View On Map"
+          onPress={() =>
+            navigation.navigate(NavigationTypes.TAB, {
+              screen: NavigationTypes.MAP,
+              params: { data, latitude, longitude },
+            })
+          }
+        />
       </ScrollView>
     </Container>
   );
 };
 
 export default EventDetailsScreen;
+
 const styles = StyleSheet.create({
-  headerViewStyle: {
-    marginTop: verticalScale(20),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  header: {
+    marginTop: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  headerTextStyle: {
+  headerText: {
     fontSize: fontScale(20),
     fontFamily: fontConstants.MULISH_BOLD,
     color: colors.white,
-    textTransform: 'uppercase',
   },
-  imageBgStyle: {
-    height: verticalScale(261),
-    width: horizontalScale(308.85),
-    alignSelf: 'center',
-    justifyContent: 'center',
-    marginTop: verticalScale(20),
+  imageBg: {
+    height: 261,
+    width: 309,
+    alignSelf: "center",
+    justifyContent: "center",
+    marginTop: 20,
   },
-  imageStyle: {
-    height: verticalScale(12),
-    width: horizontalScale(18),
-    left: horizontalScale(20),
+  flareImg: {
+    height: 12,
+    width: 18,
+    left: 20,
   },
-  rowStyle: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    marginTop: verticalScale(10),
+  rowCenter: { flexDirection: "row", alignSelf: "center", marginTop: 10 },
+  speedText: {
+    marginLeft: 5,
+    color: colors.white,
+    fontFamily: fontConstants.MULISH_BOLD,
   },
-  textStyle: {
-    fontSize: fontScale(12),
+  tagRow: { flexDirection: "row", gap: 8, marginTop: 20 },
+  title: {
+    fontSize: 18,
     fontFamily: fontConstants.MULISH_BOLD,
     color: colors.white,
-    marginLeft: horizontalScale(5),
+    marginTop: 10,
   },
-  titleTextStyle: {
-    fontSize: fontScale(18),
+  desc: {
+    fontSize: 12,
     fontFamily: fontConstants.MULISH_BOLD,
-    color: colors.white,
-    marginTop: verticalScale(10),
-  },
-  descTextStyle: {
     color: colors.grey,
-    fontSize: fontScale(12),
-    fontFamily: fontConstants.MULISH_BOLD,
-    marginTop: verticalScale(8),
+    marginTop: 8,
   },
-  subRowStyle: {
-    flexDirection: 'row',
-    gap: horizontalScale(6),
-    marginTop: verticalScale(20),
-  },
-  flatListStyle: {
+  cardBox: {
     backgroundColor: colors.white10Opacity,
-    padding: horizontalScale(20),
-    marginTop: verticalScale(10),
-    borderRadius: verticalScale(10),
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 10,
+    gap: 10,
   },
-  vStyle: {
+  impactBox: {
     backgroundColor: colors.orange10Opacity,
-    padding: horizontalScale(20),
-    marginTop: verticalScale(10),
-    borderRadius: verticalScale(10),
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 10,
   },
-  vSubStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  modeTextStyle: {
-    fontSize: fontScale(14),
-    fontFamily: fontConstants.MULISH_BOLD,
+  moderateText: {
+    marginLeft: 10,
     color: colors.orange,
-    marginLeft: horizontalScale(10),
+    fontFamily: fontConstants.MULISH_BOLD,
+  },
+  impactText: {
+    fontSize: 12,
+    fontFamily: fontConstants.MULISH_BOLD,
+    color: colors.grey,
+    marginTop: 5,
   },
 });
